@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分析学习平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#4080FF',
+                        accent: '#69B1FF',
+                        light: '#F5F7FA',
+                        dark: '#1D2129',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                    },
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                background-image: linear-gradient(90deg, #165DFF, #4080FF);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(22, 93, 255, 0.1), 0 10px 10px -5px rgba(22, 93, 255, 0.04);
+            }
+            .btn-hover {
+                transition: all 0.3s ease;
+            }
+            .btn-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(22, 93, 255, 0.2);
+            }
+            .nav-link {
+                position: relative;
+                transition: all 0.3s ease;
+            }
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(90deg, #165DFF, #4080FF);
+                transition: width 0.3s ease;
+            }
+            .nav-link:hover::after {
+                width: 100%;
+            }
+            .code-editor {
+                font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+                line-height: 1.5;
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-light text-dark min-h-screen flex flex-col">
+    <!-- 导航栏 -->
+    <header class="sticky top-0 z-50 bg-white shadow-sm transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+                    <i class="fa fa-line-chart text-white text-xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gradient">数据分析学习平台</h1>
+            </div>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="nav-link font-medium text-dark hover:text-primary">首页</a>
+                <a href="#projects" class="nav-link font-medium text-dark hover:text-primary">训练项目</a>
+                <a href="#practice" class="nav-link font-medium text-dark hover:text-primary">练习题</a>
+                <a href="#exam" class="nav-link font-medium text-dark hover:text-primary">考试</a>
+                <a href="#profile" class="nav-link font-medium text-dark hover:text-primary">个人中心</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button class="hidden md:block px-6 py-2 rounded-full bg-primary text-white font-medium btn-hover">登录</button>
+                <button class="md:hidden text-dark text-2xl" id="mobile-menu-button">
+                    <i class="fa fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端菜单 -->
+        <div class="md:hidden hidden bg-white shadow-md absolute w-full" id="mobile-menu">
+            <div class="container mx-auto px-4 py-3 flex flex-col space-y-4">
+                <a href="#home" class="font-medium text-dark hover:text-primary py-2">首页</a>
+                <a href="#projects" class="font-medium text-dark hover:text-primary py-2">训练项目</a>
+                <a href="#practice" class="font-medium text-dark hover:text-primary py-2">练习题</a>
+                <a href="#exam" class="font-medium text-dark hover:text-primary py-2">考试</a>
+                <a href="#profile" class="font-medium text-dark hover:text-primary py-2">个人中心</a>
+                <button class="px-6 py-2 rounded-full bg-primary text-white font-medium btn-hover">登录</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容 -->
+    <main class="flex-grow">
+        <!-- 首页 -->
+        <section id="home" class="py-16 bg-gradient-to-b from-white to-light">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="md:w-1/2 mb-10 md:mb-0">
+                        <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                            掌握<span class="text-gradient">数据分析</span>技能
+                        </h2>
+                        <p class="text-lg text-gray-600 mb-8">
+                            为Python和数据分析初学者打造的学习平台，通过系统化的训练项目、练习题和考试，帮助你快速掌握数据分析核心技能。
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <button class="px-8 py-3 rounded-full bg-primary text-white font-medium btn-hover">
+                                开始学习
+                            </button>
+                            <button class="px-8 py-3 rounded-full border-2 border-primary text-primary font-medium btn-hover">
+                                了解更多
+                            </button>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2">
+                        <div class="relative">
+                            <div class="absolute -top-4 -left-4 w-full h-full bg-primary/10 rounded-2xl"></div>
+                            <div class="relative bg-white rounded-2xl shadow-xl p-6 card-hover">
+                                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=data%20analysis%20dashboard%20with%20charts%20and%20graphs&image_size=landscape_16_9" alt="数据分析示例" class="w-full rounded-xl">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 训练项目 -->
+        <section id="projects" class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">训练项目</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">
+                        系统化的训练项目，涵盖数据分析的各个方面，从基础到进阶
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 项目卡片 1 -->
+                    <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-gray-400 font-medium">#1</span>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">入门</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">零售业销售数据清洗与异常值修复</h3>
+                        <p class="text-gray-600 mb-4">
+                            掌握数据清洗的核心技能，包括重复值处理、缺失值填充、数据类型转换和异常值检测
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">数据清洗</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">缺失值</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">异常值</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">Pandas基础</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fa fa-clock-o text-gray-400 mr-2"></i>
+                                <span class="text-sm text-gray-500">45分钟</span>
+                            </div>
+                            <a href="#project-detail" class="text-primary font-medium hover:underline flex items-center">
+                                开始学习 <i class="fa fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 项目卡片 2 -->
+                    <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-gray-400 font-medium">#2</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">进阶</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">电商平台用户行为日志特征工程</h3>
+                        <p class="text-gray-600 mb-4">
+                            从用户行为日志中提取有价值的特征，构建用户画像和行为模式
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">特征工程</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">用户画像</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">时间序列</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">分组合</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fa fa-clock-o text-gray-400 mr-2"></i>
+                                <span class="text-sm text-gray-500">60分钟</span>
+                            </div>
+                            <a href="#project-detail" class="text-primary font-medium hover:underline flex items-center">
+                                开始学习 <i class="fa fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 项目卡片 3 -->
+                    <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-gray-400 font-medium">#3</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">进阶</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">基于时序数据的销售预测特征构建</h3>
+                        <p class="text-gray-600 mb-4">
+                            构建时间序列预测模型的特征工程，包括滞后特征、滚动窗口和差分特征
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">时间序列</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">滞后特征</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">滚动窗口</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">销售预测</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fa fa-clock-o text-gray-400 mr-2"></i>
+                                <span class="text-sm text-gray-500">60分钟</span>
+                            </div>
+                            <a href="#project-detail" class="text-primary font-medium hover:underline flex items-center">
+                                开始学习 <i class="fa fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 项目卡片 4 -->
+                    <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-gray-400 font-medium">#4</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">进阶</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">超市购物篮关联规则挖掘（Apriori算法）</h3>
+                        <p class="text-gray-600 mb-4">
+                            使用Apriori算法挖掘超市购物篮数据中的关联规则，发现商品之间的购买关联
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">购物篮分析</span>
+                            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">关联规则</span>
+                            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">Apriori</span>
+                            <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs">mlxtend</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fa fa-clock-o text-gray-400 mr-2"></i>
+                                <span class="text-sm text-gray-500">60分钟</span>
+                            </div>
+                            <a href="#project-detail" class="text-primary font-medium hover:underline flex items-center">
+                                开始学习 <i class="fa fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 项目卡片 5 -->
+                    <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-gray-400 font-medium">#5</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">进阶</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">大规模购物篮数据的分块处理</h3>
+                        <p class="text-gray-600 mb-4">
+                            处理大规模交易数据，使用分块技术进行增量计算和内存优化
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">大数据</span>
+                            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">分块处理</span>
+                            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">增量计算</span>
+                            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">内存优化</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fa fa-clock-o text-gray-400 mr-2"></i>
+                                <span class="text-sm text-gray-500">60分钟</span>
+                            </div>
+                            <a href="#project-detail" class="text-primary font-medium hover:underline flex items-center">
+                                开始学习 <i class="fa fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 项目卡片 6 -->
+                    <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-gray-400 font-medium">#6</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">进阶</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">基于K-Means的用户价值分群（RFM模型）</h3>
+                        <p class="text-gray-600 mb-4">
+                            使用RFM模型和K-Means聚类进行用户分群
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">RFM</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">K-Means</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">用户分群</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fa fa-clock-o text-gray-400 mr-2"></i>
+                                <span class="text-sm text-gray-500">75分钟</span>
+                            </div>
+                            <a href="#project-detail" class="text-primary font-medium hover:underline flex items-center">
+                                开始学习 <i class="fa fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 项目卡片 7 -->
+                    <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-gray-400 font-medium">#7</span>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">进阶</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">层次聚类与商品组合推荐</h3>
+                        <p class="text-gray-600 mb-4">
+                            使用层次聚类进行商品分组，基于聚类结果做商品推荐
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">层次聚类</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">树状图</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">商品推荐</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fa fa-clock-o text-gray-400 mr-2"></i>
+                                <span class="text-sm text-gray-500">60分钟</span>
+                            </div>
+                            <a href="#project-detail" class="text-primary font-medium hover:underline flex items-center">
+                                开始学习 <i class="fa fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 项目卡片 8 -->
+                    <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-gray-400 font-medium">#8</span>
+                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">高级</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">DBSCAN异常交易检测（刷单识别）</h3>
+                        <p class="text-gray-600 mb-4">
+                            使用DBSCAN聚类识别异常交易，检测刷单行为
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">DBSCAN</span>
+                            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">异常检测</span>
+                            <span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">刷单识别</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fa fa-clock-o text-gray-400 mr-2"></i>
+                                <span class="text-sm text-gray-500">75分钟</span>
+                            </div>
+                            <a href="#project-detail" class="text-primary font-medium hover:underline flex items-center">
+                                开始学习 <i class="fa fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 项目卡片 9 -->
+                    <div class="bg-white rounded-2xl shadow-md p-6 card-hover">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-gray-400 font-medium">#9</span>
+                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">高级</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">结合聚类的购物车捆绑销售策略</h3>
+                        <p class="text-gray-600 mb-4">
+                            先分群再挖掘关联规则，实现个性化商品推荐
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">聚类+关联</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">个性化推荐</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">捆绑销售</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i class="fa fa-clock-o text-gray-400 mr-2"></i>
+                                <span class="text-sm text-gray-500">90分钟</span>
+                            </div>
+                            <a href="#project-detail" class="text-primary font-medium hover:underline flex items-center">
+                                开始学习 <i class="fa fa-arrow-right ml-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 练习题 -->
+        <section id="practice" class="py-16 bg-light">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">练习题</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">
+                        通过练习巩固所学知识，包括选择题和代码题
+                    </p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md p-8">
+                    <!-- 选择题 1 -->
+                    <div class="mb-10">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                <span class="text-primary font-semibold">1</span>
+                            </div>
+                            <h3 class="text-xl font-semibold">选择题：以下哪个是Python的内置数据类型？</h3>
+                        </div>
+                        <div class="ml-11 space-y-3 mb-6">
+                            <div class="flex items-center">
+                                <input type="radio" id="q1-a" name="q1" class="mr-3">
+                                <label for="q1-a" class="cursor-pointer">A. ArrayList</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="q1-b" name="q1" class="mr-3">
+                                <label for="q1-b" class="cursor-pointer">B. HashMap</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="q1-c" name="q1" class="mr-3">
+                                <label for="q1-c" class="cursor-pointer">C. List</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="q1-d" name="q1" class="mr-3">
+                                <label for="q1-d" class="cursor-pointer">D. Dictionary</label>
+                            </div>
+                        </div>
+                        <div class="ml-11">
+                            <button class="px-6 py-2 rounded-lg bg-primary text-white font-medium btn-hover">
+                                提交答案
+                            </button>
+                        </div>
+                        <div class="ml-11 mt-4 hidden" id="q1-explanation">
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                <p class="font-medium text-green-700">正确答案：D. Dictionary</p>
+                                <p class="text-gray-600 mt-2">
+                                    Python的内置数据类型包括：int、float、str、bool、list、tuple、dict、set等。Dictionary（字典）是Python中用于存储键值对的数据类型。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 代码题 1 -->
+                    <div class="mb-10">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                <span class="text-primary font-semibold">2</span>
+                            </div>
+                            <h3 class="text-xl font-semibold">代码题：编写一个函数计算斐波那契数列的第n项</h3>
+                        </div>
+                        <div class="ml-11 mb-6">
+                            <div class="bg-gray-900 rounded-lg overflow-hidden">
+                                <div class="flex items-center justify-between bg-gray-800 px-4 py-2">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                    </div>
+                                    <span class="text-gray-400 text-sm">fibonacci.py</span>
+                                </div>
+                                <pre class="p-4 code-editor text-gray-300"><code class="language-python">def fibonacci(n):
+    # 请在此处编写代码
+    pass
+
+# 测试代码
+print(fibonacci(10))</code></pre>
+                            </div>
+                            <div class="mt-4 flex space-x-4">
+                                <button class="px-6 py-2 rounded-lg bg-primary text-white font-medium btn-hover">
+                                    运行代码
+                                </button>
+                                <button class="px-6 py-2 rounded-lg border border-gray-300 text-dark font-medium btn-hover">
+                                    提交答案
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ml-11 mt-4 hidden" id="code-result">
+                            <div class="bg-gray-100 border border-gray-200 p-4 rounded-lg">
+                                <h4 class="font-medium mb-2">运行结果：</h4>
+                                <pre class="text-gray-700">55</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 选择题 2 -->
+                    <div class="mb-10">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                <span class="text-primary font-semibold">3</span>
+                            </div>
+                            <h3 class="text-xl font-semibold">选择题：以下哪个语句可以正确创建一个空列表？</h3>
+                        </div>
+                        <div class="ml-11 space-y-3 mb-6">
+                            <div class="flex items-center">
+                                <input type="radio" id="q2-a" name="q2" class="mr-3">
+                                <label for="q2-a" class="cursor-pointer">A. list = []</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="q2-b" name="q2" class="mr-3">
+                                <label for="q2-b" class="cursor-pointer">B. list = {}</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="q2-c" name="q2" class="mr-3">
+                                <label for="q2-c" class="cursor-pointer">C. list = ()</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="q2-d" name="q2" class="mr-3">
+                                <label for="q2-d" class="cursor-pointer">D. list = set()</label>
+                            </div>
+                        </div>
+                        <div class="ml-11">
+                            <button class="px-6 py-2 rounded-lg bg-primary text-white font-medium btn-hover">
+                                提交答案
+                            </button>
+                        </div>
+                        <div class="ml-11 mt-4 hidden" id="q2-explanation">
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                <p class="font-medium text-green-700">正确答案：A. list = []</p>
+                                <p class="text-gray-600 mt-2">
+                                    在Python中，空列表使用方括号 [] 创建，空字典使用大括号 {} 创建，空元组使用圆括号 () 创建，空集合使用 set() 函数创建。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 代码题 2 -->
+                    <div class="mb-10">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                <span class="text-primary font-semibold">4</span>
+                            </div>
+                            <h3 class="text-xl font-semibold">代码题：编写一个函数计算列表中所有元素的和</h3>
+                        </div>
+                        <div class="ml-11 mb-6">
+                            <div class="bg-gray-900 rounded-lg overflow-hidden">
+                                <div class="flex items-center justify-between bg-gray-800 px-4 py-2">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                    </div>
+                                    <span class="text-gray-400 text-sm">sum_list.py</span>
+                                </div>
+                                <pre class="p-4 code-editor text-gray-300"><code class="language-python">def sum_list(numbers):
+    # 请在此处编写代码
+    pass
+
+# 测试代码
+print(sum_list([1, 2, 3, 4, 5]))</code></pre>
+                            </div>
+                            <div class="mt-4 flex space-x-4">
+                                <button class="px-6 py-2 rounded-lg bg-primary text-white font-medium btn-hover">
+                                    运行代码
+                                </button>
+                                <button class="px-6 py-2 rounded-lg border border-gray-300 text-dark font-medium btn-hover">
+                                    提交答案
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ml-11 mt-4 hidden" id="code-result-2">
+                            <div class="bg-gray-100 border border-gray-200 p-4 rounded-lg">
+                                <h4 class="font-medium mb-2">运行结果：</h4>
+                                <pre class="text-gray-700">15</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 选择题 3 -->
+                    <div class="mb-10">
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                <span class="text-primary font-semibold">5</span>
+                            </div>
+                            <h3 class="text-xl font-semibold">选择题：以下哪个是Python中的循环语句？</h3>
+                        </div>
+                        <div class="ml-11 space-y-3 mb-6">
+                            <div class="flex items-center">
+                                <input type="radio" id="q3-a" name="q3" class="mr-3">
+                                <label for="q3-a" class="cursor-pointer">A. for (int i = 0; i < 10; i++)</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="q3-b" name="q3" class="mr-3">
+                                <label for="q3-b" class="cursor-pointer">B. while i < 10:
+                                    i += 1</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="q3-c" name="q3" class="mr-3">
+                                <label for="q3-c" class="cursor-pointer">C. loop i from 0 to 9</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="q3-d" name="q3" class="mr-3">
+                                <label for="q3-d" class="cursor-pointer">D. repeat until i >= 10</label>
+                            </div>
+                        </div>
+                        <div class="ml-11">
+                            <button class="px-6 py-2 rounded-lg bg-primary text-white font-medium btn-hover">
+                                提交答案
+                            </button>
+                        </div>
+                        <div class="ml-11 mt-4 hidden" id="q3-explanation">
+                            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                                <p class="font-medium text-green-700">正确答案：B. while i < 10:
+                                    i += 1</p>
+                                <p class="text-gray-600 mt-2">
+                                    Python中的循环语句包括for循环和while循环。选项B是正确的while循环语法，而选项A是C语言风格的for循环，选项C和D不是Python的循环语法。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 代码题 3 -->
+                    <div>
+                        <div class="flex items-center mb-4">
+                            <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                <span class="text-primary font-semibold">6</span>
+                            </div>
+                            <h3 class="text-xl font-semibold">代码题：编写一个函数判断一个字符串是否是回文</h3>
+                        </div>
+                        <div class="ml-11 mb-6">
+                            <div class="bg-gray-900 rounded-lg overflow-hidden">
+                                <div class="flex items-center justify-between bg-gray-800 px-4 py-2">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                    </div>
+                                    <span class="text-gray-400 text-sm">palindrome.py</span>
+                                </div>
+                                <pre class="p-4 code-editor text-gray-300"><code class="language-python">def is_palindrome(s):
+    # 请在此处编写代码
+    pass
+
+# 测试代码
+print(is_palindrome("racecar"))
+print(is_palindrome("hello"))</code></pre>
+                            </div>
+                            <div class="mt-4 flex space-x-4">
+                                <button class="px-6 py-2 rounded-lg bg-primary text-white font-medium btn-hover">
+                                    运行代码
+                                </button>
+                                <button class="px-6 py-2 rounded-lg border border-gray-300 text-dark font-medium btn-hover">
+                                    提交答案
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ml-11 mt-4 hidden" id="code-result-3">
+                            <div class="bg-gray-100 border border-gray-200 p-4 rounded-lg">
+                                <h4 class="font-medium mb-2">运行结果：</h4>
+                                <pre class="text-gray-700">True
+False</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 项目详情（学习+练习一体化） -->
+        <section id="project-detail" class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <!-- 左侧学习内容 -->
+                    <div class="lg:w-1/2">
+                        <div class="bg-white rounded-2xl shadow-md p-8 card-hover">
+                            <h2 class="text-2xl font-bold mb-6">Python基础 - 变量与数据类型</h2>
+                            <div class="space-y-6">
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-3">变量</h3>
+                                    <p class="text-gray-600 mb-4">
+                                        在Python中，变量是用来存储数据的容器。变量的赋值使用等号（=）。
+                                    </p>
+                                    <div class="bg-gray-100 rounded-lg p-4">
+                                        <pre class="text-gray-700"><code class="language-python"># 变量赋值
+name = "John"
+age = 30
+height = 1.75
+is_student = False</code></pre>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold mb-3">数据类型</h3>
+                                    <p class="text-gray-600 mb-4">
+                                        Python有多种内置数据类型，包括：
+                                    </p>
+                                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                                        <li>整数（int）：如 1, 2, 3</li>
+                                        <li>浮点数（float）：如 1.5, 2.0</li>
+                                        <li>字符串（str）：如 "Hello"</li>
+                                        <li>布尔值（bool）：True 或 False</li>
+                                        <li>列表（list）：如 [1, 2, 3]</li>
+                                        <li>元组（tuple）：如 (1, 2, 3)</li>
+                                        <li>字典（dict）：如 {"name": "John", "age": 30}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 右侧练习 -->
+                    <div class="lg:w-1/2">
+                        <div class="bg-white rounded-2xl shadow-md p-8 card-hover">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-xl font-semibold">练习</h3>
+                                <div class="flex items-center">
+                                    <span class="text-sm text-gray-500 mr-2">进度：</span>
+                                    <div class="w-32 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-primary rounded-full" style="width: 60%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium ml-2">60%</span>
+                                </div>
+                            </div>
+                            <!-- 选择题 -->
+                            <div class="mb-8">
+                                <h4 class="font-medium mb-3">选择题：以下哪个是Python的字符串字面量？</h4>
+                                <div class="space-y-3 mb-4">
+                                    <div class="flex items-center">
+                                        <input type="radio" id="q2-a" name="q2" class="mr-3">
+                                        <label for="q2-a" class="cursor-pointer">A. 123</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="radio" id="q2-b" name="q2" class="mr-3">
+                                        <label for="q2-b" class="cursor-pointer">B. 3.14</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="radio" id="q2-c" name="q2" class="mr-3">
+                                        <label for="q2-c" class="cursor-pointer">C. "Hello"</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="radio" id="q2-d" name="q2" class="mr-3">
+                                        <label for="q2-d" class="cursor-pointer">D. True</label>
+                                    </div>
+                                </div>
+                                <button class="px-6 py-2 rounded-lg bg-primary text-white font-medium btn-hover">
+                                    提交答案
+                                </button>
+                            </div>
+                            <!-- 代码题 -->
+                            <div>
+                                <h4 class="font-medium mb-3">代码题：编写一个函数计算两个数的和</h4>
+                                <div class="bg-gray-900 rounded-lg overflow-hidden mb-4">
+                                    <div class="flex items-center justify-between bg-gray-800 px-4 py-2">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                        </div>
+                                        <span class="text-gray-400 text-sm">add.py</span>
+                                    </div>
+                                    <pre class="p-4 code-editor text-gray-300"><code class="language-python">def add(a, b):
+    # 请在此处编写代码
+    pass
+
+# 测试代码
+print(add(5, 3))</code></pre>
+                                </div>
+                                <div class="flex space-x-4">
+                                    <button class="px-6 py-2 rounded-lg bg-primary text-white font-medium btn-hover">
+                                        运行代码
+                                    </button>
+                                    <button class="px-6 py-2 rounded-lg border border-gray-300 text-dark font-medium btn-hover">
+                                        提交答案
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 考试 -->
+        <section id="exam" class="py-16 bg-light">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">考试</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">
+                        限时考试，包含选择题和代码题，提交后自动判分
+                    </p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-md p-8">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-xl font-semibold">Python基础考试</h3>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                <i class="fa fa-clock-o text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">剩余时间</div>
+                                <div class="text-lg font-semibold" id="countdown">00:30:00</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 考试题目 -->
+                    <div class="space-y-10">
+                        <!-- 选择题 -->
+                        <div>
+                            <div class="flex items-center mb-4">
+                                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                    <span class="text-primary font-semibold">1</span>
+                                </div>
+                                <h4 class="text-lg font-semibold">以下哪个是Python的注释符号？</h4>
+                            </div>
+                            <div class="ml-11 space-y-3">
+                                <div class="flex items-center">
+                                    <input type="radio" id="q3-a" name="q3" class="mr-3">
+                                    <label for="q3-a" class="cursor-pointer">A. //</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="q3-b" name="q3" class="mr-3">
+                                    <label for="q3-b" class="cursor-pointer">B. /* */</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="q3-c" name="q3" class="mr-3">
+                                    <label for="q3-c" class="cursor-pointer">C. #</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="q3-d" name="q3" class="mr-3">
+                                    <label for="q3-d" class="cursor-pointer">D. --</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 代码题 -->
+                        <div>
+                            <div class="flex items-center mb-4">
+                                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                                    <span class="text-primary font-semibold">2</span>
+                                </div>
+                                <h4 class="text-lg font-semibold">编写一个函数判断一个数是否为质数</h4>
+                            </div>
+                            <div class="ml-11">
+                                <div class="bg-gray-900 rounded-lg overflow-hidden mb-4">
+                                    <div class="flex items-center justify-between bg-gray-800 px-4 py-2">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                        </div>
+                                        <span class="text-gray-400 text-sm">is_prime.py</span>
+                                    </div>
+                                    <pre class="p-4 code-editor text-gray-300"><code class="language-python">def is_prime(n):
+    # 请在此处编写代码
+    pass
+
+# 测试代码
+print(is_prime(7))
+print(is_prime(4))</code></pre>
+                                </div>
+                                <button class="px-6 py-2 rounded-lg bg-primary text-white font-medium btn-hover">
+                                    运行代码
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-10 flex justify-center">
+                        <button class="px-8 py-3 rounded-lg bg-primary text-white font-medium btn-hover">
+                            提交考试
+                        </button>
+                    </div>
+                </div>
+                <!-- 考试结果 -->
+                <div class="mt-10 bg-white rounded-2xl shadow-md p-8 hidden" id="exam-results">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold mb-4">考试结果</h3>
+                        <div class="flex justify-center items-center space-x-6 mb-6">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-primary mb-2">85</div>
+                                <div class="text-gray-600">总分</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-green-500 mb-2">80%</div>
+                                <div class="text-gray-600">正确率</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-yellow-500 mb-2">2</div>
+                                <div class="text-gray-600">错题数</div>
+                            </div>
+                        </div>
+                        <div class="w-full max-w-2xl mx-auto">
+                            <canvas id="exam-chart" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <h4 class="text-xl font-semibold mb-4">错题解析</h4>
+                        <div class="space-y-6">
+                            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                                <div class="font-medium mb-2">题目 1：以下哪个是Python的注释符号？</div>
+                                <div class="text-gray-600 mb-2">你的答案：B. /* */</div>
+                                <div class="text-green-600 mb-2">正确答案：C. #</div>
+                                <div class="text-gray-600">解析：Python使用#符号作为单行注释，而/* */是C语言风格的注释。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 个人中心 -->
+        <section id="profile" class="py-16">
+            <div class="container mx-auto px-4">
+                <div class="bg-white rounded-2xl shadow-md p-8">
+                    <div class="flex flex-col md:flex-row items-center mb-8">
+                        <div class="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-4 md:mb-0 md:mr-6">
+                            <i class="fa fa-user text-primary text-3xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold mb-2">用户中心</h2>
+                            <p class="text-gray-600">欢迎回来，开始你的学习之旅！</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-light rounded-xl p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+                                    <i class="fa fa-book text-primary"></i>
+                                </div>
+                                <h3 class="font-semibold">学习进度</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm text-gray-600">Python基础</span>
+                                        <span class="text-sm font-medium">80%</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-primary rounded-full" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm text-gray-600">数据清洗</span>
+                                        <span class="text-sm font-medium">40%</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-primary rounded-full" style="width: 40%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm text-gray-600">数据可视化</span>
+                                        <span class="text-sm font-medium">20%</span>
+                                    </div>
+                                    <div class="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-primary rounded-full" style="width: 20%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-light rounded-xl p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+                                    <i class="fa fa-tasks text-primary"></i>
+                                </div>
+                                <h3 class="font-semibold">练习统计</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">已完成练习</span>
+                                    <span class="font-medium">45</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">正确率</span>
+                                    <span class="font-medium text-green-500">85%</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">平均完成时间</span>
+                                    <span class="font-medium">12分钟</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-light rounded-xl p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+                                    <i class="fa fa-certificate text-primary"></i>
+                                </div>
+                                <h3 class="font-semibold">考试成绩</h3>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">Python基础考试</span>
+                                    <span class="font-medium">85分</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">数据清洗考试</span>
+                                    <span class="font-medium">78分</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-gray-600">数据可视化考试</span>
+                                    <span class="font-medium">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">最近活动</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-4 bg-light rounded-lg">
+                                <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                                    <i class="fa fa-check text-green-500"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">完成了Python基础练习</div>
+                                    <div class="text-sm text-gray-600">2024年1月15日 14:30</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 bg-light rounded-lg">
+                                <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center mr-4">
+                                    <i class="fa fa-book text-blue-500"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">学习了数据清洗章节</div>
+                                    <div class="text-sm text-gray-600">2024年1月15日 12:15</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center p-4 bg-light rounded-lg">
+                                <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mr-4">
+                                    <i class="fa fa-certificate text-purple-500"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium">参加了Python基础考试</div>
+                                    <div class="text-sm text-gray-600">2024年1月14日 16:45</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
+                            <i class="fa fa-line-chart text-primary text-lg"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">数据分析学习平台</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        为Python和数据分析初学者打造的学习平台，通过系统化的训练项目、练习题和考试，帮助你快速掌握数据分析核心技能。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-github text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">快速链接</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+                        <li><a href="#projects" class="text-gray-400 hover:text-white transition-colors">训练项目</a></li>
+                        <li><a href="#practice" class="text-gray-400 hover:text-white transition-colors">练习题</a></li>
+                        <li><a href="#exam" class="text-gray-400 hover:text-white transition-colors">考试</a></li>
+                        <li><a href="#profile" class="text-gray-400 hover:text-white transition-colors">个人中心</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">联系我们</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope-o text-gray-400 mr-2"></i>
+                            <span class="text-gray-400">contact@data-learning.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone text-gray-400 mr-2"></i>
+                            <span class="text-gray-400">400-123-4567</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-map-marker text-gray-400 mr-2"></i>
+                            <span class="text-gray-400">北京市海淀区中关村大街1号</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">订阅更新</h4>
+                    <p class="text-gray-400 mb-4">
+                        订阅我们的邮件，获取最新的学习资源和平台更新。
+                    </p>
+                    <div class="flex">
+                        <input type="email" placeholder="你的邮箱" class="flex-grow px-4 py-2 rounded-l-lg text-dark focus:outline-none">
+                        <button class="px-4 py-2 bg-primary text-white rounded-r-lg btn-hover">
+                            订阅
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>© 2024 数据分析学习平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('py-2', 'shadow');
+                navbar.classList.remove('py-3', 'shadow-sm');
+            } else {
+                navbar.classList.add('py-3', 'shadow-sm');
+                navbar.classList.remove('py-2', 'shadow');
+            }
+        });
+
+        // 移动端菜单
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 提交选择题答案
+        document.querySelectorAll('button').forEach(button => {
+            if (button.textContent.includes('提交答案')) {
+                button.addEventListener('click', function() {
+                    const explanation = this.parentElement.nextElementSibling;
+                    if (explanation) {
+                        explanation.classList.remove('hidden');
+                    }
+                });
+            }
+        });
+
+        // 运行代码
+        document.querySelectorAll('button').forEach(button => {
+            if (button.textContent.includes('运行代码')) {
+                button.addEventListener('click', function() {
+                    const resultDiv = this.parentElement.nextElementSibling;
+                    if (resultDiv) {
+                        resultDiv.classList.remove('hidden');
+                    }
+                });
+            }
+        });
+
+        // 倒计时
+        function startCountdown() {
+            let time = 30 * 60; // 30分钟
+            const countdownElement = document.getElementById('countdown');
+            
+            const timer = setInterval(function() {
+                const minutes = Math.floor(time / 60);
+                const seconds = time % 60;
+                countdownElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (time <= 0) {
+                    clearInterval(timer);
+                    alert('考试时间到！');
+                }
+                
+                time--;
+            }, 1000);
+        }
+
+        // 初始化倒计时
+        startCountdown();
+
+        // 提交考试
+        document.querySelectorAll('button').forEach(button => {
+            if (button.textContent.includes('提交考试')) {
+                button.addEventListener('click', function() {
+                    const examResults = document.getElementById('exam-results');
+                    if (examResults) {
+                        examResults.classList.remove('hidden');
+                        initExamChart();
+                    }
+                });
+            }
+        });
+
+        // 初始化考试结果图表
+        function initExamChart() {
+            const ctx = document.getElementById('exam-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['正确', '错误'],
+                    datasets: [{
+                        data: [80, 20],
+                        backgroundColor: ['#165DFF', '#FF4D4F'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // 代码语法高亮
+        Prism.highlightAll();
+    </script>
+</body>
+</html>
